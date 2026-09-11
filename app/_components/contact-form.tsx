@@ -23,6 +23,7 @@ export default function ContactForm() {
       });
       if (response.ok) {
         setStatus("Gracias. Recibimos tu mensaje.");
+        (window as Window & { fbq?: (action: string, event: string, data?: Record<string, unknown>) => void }).fbq?.("track", "Lead");
         form.reset();
         setStartedAt(Date.now());
       } else if (response.status === 400) setStatus("Revisa tu nombre, correo, fecha, celular y mensaje.");
