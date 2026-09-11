@@ -42,7 +42,7 @@ export default async function Home() {
   return <div className="site-shell">
     <div className="availability-banner" role="status"><span>Agenda abierta · 2026 — 2027</span><a href="#contact">Conversemos sobre su fecha</a></div>
     <header className="site-header">
-      <Link className="site-logo" href="/" aria-label="Keeanu, inicio"><span>K</span><small>Fotografía & cine</small></Link>
+      <Link className="site-logo" href="/" aria-label="Keeanu, inicio"><img className="site-logo-image" src="/keeanu-logo-square.png" alt="Keeanu Contreras" /></Link>
       <div className="header-line" aria-hidden="true" />
       <nav className="site-nav" aria-label="Navegación principal"><a href="#trabajo">Portafolio</a><a href="#contact">Contacto</a><details className="site-menu"><summary>Menú <span>+</span></summary><div><Link href="/info/proceso">Cómo trabajamos</Link><Link href="/info/paquetes">Paquetes</Link><Link href="/info/faq">Preguntas frecuentes</Link><Link href="/info/testimonios">Testimonios</Link></div></details><span className="language-switch"><Link href="/">ES</Link><span>/</span><Link href="/en">EN</Link></span></nav>
     </header>

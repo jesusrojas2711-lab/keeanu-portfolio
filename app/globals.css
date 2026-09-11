@@ -170,3 +170,5 @@ fieldset { border:0;padding:0;margin:0;min-width:0; }fieldset:disabled { opacity
 }
 @media(max-width:480px) { .site-logo small { display:none; }.site-nav { gap:.8rem; }.site-nav a { font-size:.56rem; }.editorial-hero { min-height:790px; }.hero-photo-left,.hero-photo-right { height:175px;bottom:2.5rem; }.card-meta { grid-template-columns:1.5rem 1fr; }.contact-fields-row { grid-template-columns:1fr; }.contact button { width:105px;height:105px; } }
 @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; }.hero-photo img,.card-image img,.arrow-link span { transition:none; }.hero-copy,.hero-photo-left,.hero-photo-right,.process-section,.trust-section,.services,.packages,.faq-section,.quote-section,.contact { animation:none; }.editorial-card,.process-list article,.faq-list details { transition:none; } }
+.site-logo-image { display:block; width:43px; height:43px; object-fit:cover; border-radius:50%; }
+@media(max-width:480px) { .site-logo-image { width:38px; height:38px; } }
