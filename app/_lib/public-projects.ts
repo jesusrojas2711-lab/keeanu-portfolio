@@ -21,7 +21,6 @@ export async function publicProjects() {
   // editorial content and contact flow.
   if (error) {
     console.error("Portfolio query failed", error);
-    return [];
   }
   const rows = data ?? [];
   const fallback = [
