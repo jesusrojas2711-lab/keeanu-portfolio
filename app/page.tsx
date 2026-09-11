@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import ContactForm from "./_components/contact-form";
 import { publicProjects } from "./_lib/public-projects";
+import { publicMediaUrl } from "./_lib/media-url";
 
 export const dynamic = "force-dynamic";
 
@@ -48,9 +49,9 @@ export default async function Home() {
 
     <main id="main">
       <section className="editorial-hero" aria-labelledby="hero-title">
-        <div className="hero-photo hero-photo-left">{featured ? <Image priority unoptimized src={`/media/${featured.id}`} alt={featured.alt_text || "Fotografía destacada de Keeanu"} fill sizes="(max-width: 760px) 82vw, 26vw" /> : <span>Historias reales</span>}</div>
+        <div className="hero-photo hero-photo-left">{featured ? <Image priority unoptimized src={publicMediaUrl(featured.object_path, featured.id)} alt={featured.alt_text || "Fotografía destacada de Keeanu"} fill sizes="(max-width: 760px) 82vw, 26vw" /> : <span>Historias reales</span>}</div>
         <div className="hero-copy"><p className="eyebrow">Keeanu Contreras · Fotografía & video</p><p className="hero-mark" aria-hidden="true">K</p><h1 id="hero-title">Fotografía<br/>que se siente.</h1><p>Recuerdos honestos, luz natural y una mirada cercana para contar lo que de verdad importa.</p><a className="arrow-link" href="#trabajo">Descubrir el trabajo <span>↘</span></a></div>
-        <div className="hero-photo hero-photo-right">{secondaryFeatured ? <Image unoptimized src={`/media/${secondaryFeatured.id}`} alt="" fill sizes="(max-width: 760px) 54vw, 23vw" /> : <span>Para siempre</span>}</div>
+        <div className="hero-photo hero-photo-right">{secondaryFeatured ? <Image unoptimized src={publicMediaUrl(secondaryFeatured.object_path, secondaryFeatured.id)} alt="" fill sizes="(max-width: 760px) 54vw, 23vw" /> : <span>Para siempre</span>}</div>
         <p className="hero-place">México · Disponible para viajar</p>
       </section>
 
@@ -58,7 +59,7 @@ export default async function Home() {
 
       <section id="trabajo" className="portfolio-section">
         <header className="section-heading"><p className="section-index">02 / Portafolio</p><h2>Historias<br/><em>seleccionadas</em></h2><p>Una colección de momentos vividos, no fabricados.</p></header>
-        <div className="featured-grid">{projects.length ? projects.map((project, index) => <Link className={`editorial-card card-${index % 3}`} key={project.id} href={`/work/${project.slug}`}><div className="card-image">{project.assets[0] && <Image unoptimized src={`/media/${project.assets[0].id}`} alt={project.assets[0].alt_text || project.title} fill sizes="(max-width: 760px) 90vw, 48vw" />}</div><div className="card-meta"><span>{String(index + 1).padStart(2, "0")}</span><div><h3>{project.title}</h3><p>{categories.find((category) => category.id === project.category)?.title}</p></div><b>↗</b></div></Link>) : <p className="portfolio-empty">Las primeras historias llegarán pronto.</p>}</div>
+        <div className="featured-grid">{projects.length ? projects.map((project, index) => <Link className={`editorial-card card-${index % 3}`} key={project.id} href={`/work/${project.slug}`}><div className="card-image">{project.assets[0] && <Image unoptimized src={publicMediaUrl(project.assets[0].object_path, project.assets[0].id)} alt={project.assets[0].alt_text || project.title} fill sizes="(max-width: 760px) 90vw, 48vw" />}</div><div className="card-meta"><span>{String(index + 1).padStart(2, "0")}</span><div><h3>{project.title}</h3><p>{categories.find((category) => category.id === project.category)?.title}</p></div><b>↗</b></div></Link>) : <p className="portfolio-empty">Las primeras historias llegarán pronto.</p>}</div>
       </section>
 
       <section className="video-feature" aria-labelledby="video-title"><div className="video-feature-copy"><p className="section-index">03 / Una película</p><h2 id="video-title">Volver a escuchar<br/><em>ese día.</em></h2><p>Una muestra de cómo preservamos las voces, los abrazos y la emoción tal como sucedieron.</p></div><div className="video-frame"><iframe src="https://drive.google.com/file/d/1JgU8JGJLA6LILywn2z-tt7DjDw7uNVXJ/preview" title="Película de boda de Keeanu Contreras" allow="autoplay" allowFullScreen /></div></section>
