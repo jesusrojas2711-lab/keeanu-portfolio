@@ -35,7 +35,28 @@ export async function publicProjects() {
     '2bb49081-9cea-48b3-9deb-95c6abb83862': '592c970f-7bdc-43ec-8fcd-9bd0b749a1a3/307f3384-4b65-44b3-8392-983cc3e106f4.webp',
     '7f4df97f-89d3-4944-b103-919e6bba1fb9': 'd498d424-ed0f-4afb-a20b-8f6d0cd18df7/de9bb25e-fcd0-46fc-90c9-4ad5c9fa9c1d.webp',
   } as Record<string, string>;
-  if (!rows.length) return fallback.map(([id, slug, title, assetId], index) => ({ id, slug, title, category: 'weddings', description: '', status: 'published', sort_order: index, created_at: '', updated_at: '', assets: [{ id: assetId, project_id: id, object_path: fallbackPaths[assetId] ?? '', alt_text: title, sort_order: 0 }] })) as (Project & { assets: Asset[] })[];
+  if (!rows.length) {
+    try {
+      const storageDb = createPublicClient();
+      const expanded = await Promise.all(fallback.map(async ([id, slug, title, assetId], index) => {
+        const listed = await storageDb.storage.from('portfolio').list(id, { limit: 200, sortBy: { column: 'name', order: 'asc' } });
+        const listedAssets = (listed.data ?? []).filter((item) => item.name).map((item, assetIndex) => ({
+          id: item.id || `${id}-${item.name}`,
+          project_id: id,
+          object_path: `${id}/${item.name}`,
+          alt_text: title,
+          sort_order: assetIndex + 1,
+        }));
+        const cover = { id: assetId, project_id: id, object_path: fallbackPaths[assetId] ?? '', alt_text: title, sort_order: 0 };
+        const assets = [cover, ...listedAssets.filter((item) => item.object_path !== cover.object_path)];
+        return { id, slug, title, category: 'weddings' as const, description: '', status: 'published' as const, sort_order: index, created_at: '', updated_at: '', assets };
+      }));
+      return expanded as (Project & { assets: Asset[] })[];
+    } catch (storageError) {
+      console.error('Portfolio storage fallback failed', storageError);
+      return fallback.map(([id, slug, title, assetId], index) => ({ id, slug, title, category: 'weddings', description: '', status: 'published', sort_order: index, created_at: '', updated_at: '', assets: [{ id: assetId, project_id: id, object_path: fallbackPaths[assetId] ?? '', alt_text: title, sort_order: 0 }] })) as (Project & { assets: Asset[] })[];
+    }
+  }
   return rows.map((row) => {
     const project = row as Project & { project_assets?: Asset[] };
     return { ...project, assets: [...(project.project_assets ?? [])].sort((a, b) => a.sort_order - b.sort_order || a.id.localeCompare(b.id)) };
