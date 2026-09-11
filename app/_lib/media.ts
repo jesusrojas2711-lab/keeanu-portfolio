@@ -16,15 +16,6 @@ export async function mediaRedirect(id: string) {
   const objectPath = assets[0]?.object_path;
   if (!objectPath) throw new PortfolioError(404, "NOT_FOUND");
 
-  const signResponse = await fetch(`${url}/storage/v1/object/sign/portfolio/${objectPath.split("/").map(encodeURIComponent).join("/")}`, {
-    method: "POST",
-    headers: { ...headers, "Content-Type": "application/json" },
-    body: JSON.stringify({ expiresIn: 60 }),
-    cache: "no-store",
-  });
-  if (!signResponse.ok) throw new PortfolioError(404, "NOT_FOUND");
-  const signed = (await signResponse.json()) as { signedURL?: string };
-  if (!signed.signedURL) throw new PortfolioError(404, "NOT_FOUND");
-  const location = new URL(signed.signedURL, `${url}/storage/v1`).toString();
+  const location = `${url}/storage/v1/object/public/portfolio/${objectPath.split("/").map(encodeURIComponent).join("/")}`;
   return new Response(null, { status: 307, headers: { Location: location, "Cache-Control": "private, no-store", "X-Content-Type-Options": "nosniff" } });
 }
