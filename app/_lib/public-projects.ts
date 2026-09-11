@@ -30,5 +30,8 @@ export async function publicProjects() {
     ['d498d424-ed0f-4afb-a20b-8f6d0cd18df7', 'l-y-a', 'L & A', '7f4df97f-89d3-4944-b103-919e6bba1fb9'],
   ];
   if (!rows.length) return fallback.map(([id, slug, title, assetId], index) => ({ id, slug, title, category: 'weddings', description: '', status: 'published', sort_order: index, created_at: '', updated_at: '', assets: [{ id: assetId, project_id: id, object_path: '', alt_text: title, sort_order: 0 }] })) as (Project & { assets: Asset[] })[];
-  return rows.map((row: any) => ({ ...row, assets: [...(row.project_assets ?? [])].sort((a, b) => a.sort_order - b.sort_order || a.id.localeCompare(b.id)) })) as (Project & { assets: Asset[] })[];
+  return rows.map((row) => {
+    const project = row as Project & { project_assets?: Asset[] };
+    return { ...project, assets: [...(project.project_assets ?? [])].sort((a, b) => a.sort_order - b.sort_order || a.id.localeCompare(b.id)) };
+  }) as (Project & { assets: Asset[] })[];
 }
