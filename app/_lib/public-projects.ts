@@ -6,9 +6,12 @@ export async function publicProjects() {
   let error: unknown = null;
   try {
     const db = createPublicClient();
-    const result = await db.from("projects").select(`${PROJECT_FIELDS},project_assets(${ASSET_FIELDS})`).eq("status", "published").order("sort_order").order("created_at", { ascending: false }).limit(100);
-    data = result.data;
-    error = result.error;
+    const result = await db.from("projects").select(PROJECT_FIELDS).eq("status", "published").order("sort_order").order("created_at", { ascending: false }).limit(100);
+    if (result.error) throw result.error;
+    const projects = result.data ?? [];
+    const assets = projects.length ? await db.from("project_assets").select(ASSET_FIELDS).in("project_id", projects.map((p) => p.id)).order("sort_order") : { data: [], error: null };
+    if (assets.error) throw assets.error;
+    data = projects.map((project) => ({ ...project, project_assets: (assets.data ?? []).filter((asset) => asset.project_id === project.id) }));
   } catch (caught) {
     error = caught;
   }
