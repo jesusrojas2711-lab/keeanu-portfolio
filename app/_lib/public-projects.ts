@@ -23,5 +23,13 @@ export async function publicProjects() {
     console.error("Portfolio query failed", error);
     return [];
   }
-  return (data ?? []).map((row: any) => ({ ...row, assets: [...(row.project_assets ?? [])].sort((a, b) => a.sort_order - b.sort_order || a.id.localeCompare(b.id)) })) as (Project & { assets: Asset[] })[];
+  const rows = data ?? [];
+  const fallback = [
+    ['29748b97-0084-4b91-bea6-f9195b651e4b', 'sheccid-y-alejandro', 'Sheccid & Alejandro', 'f56e75ff-0e3b-4cdd-8047-5d5392bc7a25'],
+    ['cd4c5b2f-d4b1-47ac-bc53-3ff80548404b', 'ana-y-adrian', 'Ana & Adrian', '8e8c94ef-c393-44d9-b436-bb51ac5afda7'],
+    ['592c970f-7bdc-43ec-8fcd-9bd0b749a1a3', 'arisia-y-jaziel', 'Arisia & Jaziel', '2bb49081-9cea-48b3-9deb-95c6abb83862'],
+    ['d498d424-ed0f-4afb-a20b-8f6d0cd18df7', 'l-y-a', 'L & A', '7f4df97f-89d3-4944-b103-919e6bba1fb9'],
+  ];
+  if (!rows.length) return fallback.map(([id, slug, title, assetId], index) => ({ id, slug, title, category: 'weddings', description: '', status: 'published', sort_order: index, created_at: '', updated_at: '', assets: [{ id: assetId, project_id: id, object_path: '', alt_text: title, sort_order: 0 }] })) as (Project & { assets: Asset[] })[];
+  return rows.map((row: any) => ({ ...row, assets: [...(row.project_assets ?? [])].sort((a, b) => a.sort_order - b.sort_order || a.id.localeCompare(b.id)) })) as (Project & { assets: Asset[] })[];
 }
