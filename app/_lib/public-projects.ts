@@ -37,10 +37,13 @@ export async function publicProjects() {
   } as Record<string, string>;
   if (!rows.length) {
     try {
-      const storageDb = createPublicClient();
+      const storageOrigin = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://wqldecfbovawesodvros.supabase.co';
+      const storageKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_0Ta25vxYlpQTzyLklihdUA_rreT9W1x';
       const expanded = await Promise.all(fallback.map(async ([id, slug, title, assetId], index) => {
-        const listed = await storageDb.storage.from('portfolio').list(id, { limit: 200, sortBy: { column: 'name', order: 'asc' } });
-        const listedAssets = (listed.data ?? []).filter((item) => item.name).map((item, assetIndex) => ({
+        const listedResponse = await fetch(`${storageOrigin}/storage/v1/object/list/portfolio`, { method: 'POST', headers: { apikey: storageKey, Authorization: `Bearer ${storageKey}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ prefix: `${id}/`, limit: 200, offset: 0, sortBy: { column: 'name', order: 'asc' } }), cache: 'no-store' });
+        if (!listedResponse.ok) throw new Error(`Storage list failed: ${listedResponse.status}`);
+        const listed = (await listedResponse.json()) as Array<{ name?: string; id?: string }>;
+        const listedAssets = listed.filter((item) => item.name).map((item, assetIndex) => ({
           id: item.id || `${id}-${item.name}`,
           project_id: id,
           object_path: `${id}/${item.name}`,
